@@ -49,3 +49,4 @@ exports.getVillages = async (req, res) => {
   );
   res.json({ data: rows });
 };
+
