@@ -191,9 +191,7 @@ curl -H "X-API-Key: your_api_key_here" \
 - Password hashing dengan bcrypt
 - JWT token authentication
 - API Key authentication
-- Rate limiting (100 req/hour)
 - Request logging
-- CORS protection
 - Helmet.js security headers
 
 ## 📊 Sample Data
@@ -288,7 +286,7 @@ MIT License - bebas digunakan untuk project apapun
 
 ## 👨‍💻 Author
 
-Tugas Akhir - [Your Name]
+Tugas Akhir - Dzakiyah Al Zahrani 20230140088
 
 ## 🙏 Credits
 
