@@ -325,6 +325,7 @@ GROUP BY role;
 -- VERIFICATION QUERIES
 -- ============================================
 
+
 -- Check data counts
 SELECT 'provinces' as table_name, COUNT(*) as count FROM provinces
 UNION ALL
