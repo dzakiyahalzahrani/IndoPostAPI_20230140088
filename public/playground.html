@@ -155,6 +155,7 @@ async function sendRequest() {
       }
     });
 
+    
     const data = await res.json();
     responseBox.textContent = JSON.stringify(data, null, 2);
   } catch (err) {
