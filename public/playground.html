@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>API Playground</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{box-sizing:border-box;font-family:system-ui,sans-serif}
+body{margin:0;background:#f5f7fb;display:flex;height:100vh}
+
+/* SIDEBAR */
+.sidebar{width:240px;background:#111827;color:#fff;display:flex;flex-direction:column}
+.sidebar h2{padding:20px;margin:0;border-bottom:1px solid #1f2937}
+.sidebar a{padding:14px 20px;color:#cbd5e1;text-decoration:none;display:block}
+.sidebar a.active,.sidebar a:hover{background:#1f2937;color:#fff}
+.sidebar .bottom{margin-top:auto;padding:20px}
+.logout{width:100%;padding:10px;background:#ef4444;color:#fff;border:none;border-radius:6px}
+
+/* MAIN */
+.main{flex:1;padding:30px;overflow:auto}
+.card{background:#fff;border-radius:10px;padding:20px;box-shadow:0 10px 20px rgba(0,0,0,.05)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+pre{background:#0f172a;color:#e5e7eb;padding:14px;border-radius:8px;font-size:13px}
+input,select{width:100%;padding:10px;border:1px solid #e5e7eb;border-radius:6px}
+.btn{padding:10px 16px;background:#2563eb;color:#fff;border:none;border-radius:6px}
+label{font-size:14px}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+  <h2>IndoPost</h2>
+  <a href="user-dashboard.html">Dashboard</a>
+  <a href="api-key.html">API Keys</a>
+  <a href="#" class="active">Playground</a>
+  <a href="docs.html">Docs</a>
+  <div class="bottom">
+    <button class="logout" onclick="logout()">Logout</button>
+  </div>
+</div>
+
+<div class="main">
+
+<h1>API Playground</h1>
+<p>Test endpoint IndoPost API secara interaktif</p>
+
+<div class="row">
+
+<div class="card">
+  <h3>Request</h3>
+
+  <label>API Key</label>
+  <input id="apiKeyInput" placeholder="Paste API Key kamu">
+
+  <br><br>
+
+  <label>Endpoint</label>
+  <select id="endpoint">
+    <option value="/api/provinces">/api/provinces</option>
+    <option value="/api/regencies">/api/regencies</option>
+    <option value="/api/districts">/api/districts</option>
+    <option value="/api/villages">/api/villages</option>
+  </select>
+
+  <div id="queryBox" style="margin-top:12px"></div>
+
+  <br>
+  <button class="btn" onclick="sendRequest()">Send Request</button>
+</div>
+
+<div class="card">
+  <h3>Response</h3>
+  <pre id="responseBox">Waiting...</pre>
+</div>
+
+</div>
+</div>
+
+<script>
+/* ===== AUTH ===== */
+const token = localStorage.getItem('token');
+if (!token) location.href = 'login.html';
+
+/* ===== ELEMENT ===== */
+const endpointSelect = document.getElementById('endpoint');
+const queryBox = document.getElementById('queryBox');
+const responseBox = document.getElementById('responseBox');
+
+/* ===== RENDER QUERY INPUT ===== */
+function renderQueryInput() {
+  queryBox.innerHTML = '';
+
+  let html = '';
+
+  if (endpointSelect.value === '/api/regencies') {
+    html = `
+      <label>Province Code</label>
+      <input type="text" id="queryInput" placeholder="contoh: 34">
+    `;
+  }
+
+  if (endpointSelect.value === '/api/districts') {
+    html = `
+      <label>Regency Code</label>
+      <input type="text" id="queryInput" placeholder="contoh: 3471">
+    `;
+  }
+
+  if (endpointSelect.value === '/api/villages') {
+    html = `
+      <label>District Code</label>
+      <input type="text" id="queryInput" placeholder="contoh: 347104">
+    `;
+  }
+
+  queryBox.innerHTML = html;
+}
+
+endpointSelect.addEventListener('change', renderQueryInput);
+renderQueryInput();
+
+/* ===== SEND REQUEST ===== */
+async function sendRequest() {
+  const apiKey = document.getElementById('apiKeyInput').value.trim();
+  const endpoint = endpointSelect.value;
+  const queryInput = document.getElementById('queryInput');
+
+  if (!apiKey) {
+    responseBox.textContent = 'API Key wajib diisi';
+    return;
+  }
+
+  let url = `http://localhost:5000${endpoint}`;
+
+  if (queryInput && queryInput.value.trim() !== '') {
+    if (endpoint === '/api/regencies') {
+      url += `?province_code=${queryInput.value.trim()}`;
+    }
+    if (endpoint === '/api/districts') {
+      url += `?regency_code=${queryInput.value.trim()}`;
+    }
+    if (endpoint === '/api/villages') {
+      url += `?district_code=${queryInput.value.trim()}`;
+    }
+  }
+
+  responseBox.textContent = 'Loading...';
+
+  try {
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${apiKey}`
+      }
+    });
+
+    const data = await res.json();
+    responseBox.textContent = JSON.stringify(data, null, 2);
+  } catch (err) {
+    responseBox.textContent = 'Request failed';
+  }
+}
+
+/* ===== LOGOUT ===== */
+function logout() {
+  localStorage.removeItem('token');
+  location.href = 'login.html';
+}
+</script>
+
+
+</body>
+</html>

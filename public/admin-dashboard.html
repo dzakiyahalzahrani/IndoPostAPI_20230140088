@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Admin Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<style>
+*{box-sizing:border-box;font-family:system-ui}
+body{margin:0;background:#f4f6fb}
+.layout{display:flex;height:100vh}
+
+/* SIDEBAR */
+.sidebar{
+  width:240px;
+  background:#0f172a;
+  color:#fff;
+  padding:20px;
+}
+.sidebar h2{margin-bottom:20px}
+.nav{
+  width:100%;
+  background:none;
+  border:none;
+  color:#cbd5e1;
+  padding:12px;
+  text-align:left;
+  cursor:pointer;
+  border-radius:6px;
+}
+.nav.active,.nav:hover{
+  background:#1e293b;
+  color:#fff;
+}
+.nav.link{
+  display:block;
+  text-decoration:none;
+  color:#cbd5e1;
+}
+.nav.link:hover{
+  background:#1e293b;
+  color:#fff;
+}
+.logout{
+  margin-top:12px;
+  background:#ef4444;
+  color:#fff;
+  border:none;
+  padding:12px;
+  border-radius:8px;
+  cursor:pointer;
+}
+.logout:hover{background:#dc2626}
+
+/* CONTENT */
+.content{
+  flex:1;
+  padding:30px;
+  overflow:auto;
+}
+.page{display:none}
+.page.active{display:block}
+h1{margin-bottom:20px}
+
+/* TABLE */
+table{
+  width:100%;
+  background:#fff;
+  border-radius:10px;
+  overflow:hidden;
+  border-collapse:collapse;
+}
+th,td{
+  padding:12px;
+  border-bottom:1px solid #eee;
+}
+th{background:#f1f5f9;text-align:left}
+
+/* FORM */
+input,select,button{
+  width:100%;
+  padding:10px;
+  margin-bottom:12px;
+}
+button{
+  background:#2563eb;
+  color:#fff;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
+button:hover{background:#1d4ed8}
+
+pre{
+  background:#111827;
+  color:#22c55e;
+  padding:10px;
+  border-radius:6px;
+}
+
+hr{
+  border:none;
+  border-top:1px solid #1e293b;
+  margin:16px 0;
+}
+
+.btn{
+  padding:6px 12px;
+  border-radius:6px;
+  border:none;
+  cursor:pointer;
+}
+.btn-edit{background:#3b82f6;color:#fff}
+.btn-delete{background:#ef4444;color:#fff;margin-left:6px}
+.btn-edit:hover{background:#2563eb}
+.btn-delete:hover{background:#dc2626}
+
+/* ACTION BUTTONS */
+.actions{
+  display:flex;
+  gap:10px;
+}
+
+.btn-action{
+  min-width:90px;
+  height:38px;
+  padding:0 14px;
+  border-radius:10px;
+  font-size:14px;
+  font-weight:500;
+  border:1px solid transparent;
+  cursor:pointer;
+  transition:all .15s ease;
+}
+
+/* EDIT / COPY STYLE */
+.btn-copy{
+  background:#f8fafc;
+  color:#0f172a;
+  border:1px solid #e5e7eb;
+}
+.btn-copy:hover{
+  background:#e5e7eb;
+}
+
+/* DELETE STYLE */
+.btn-delete{
+  background:#fee2e2;
+  color:#b91c1c;
+  border:1px solid #fecaca;
+}
+.btn-delete:hover{
+  background:#fecaca;
+}
+
+table td{
+  vertical-align:middle;
+}
+
+table tr{
+  height:68px;
+}
+
+/* ===== ACTION BUTTON STYLE (COPY | DELETE LOOK) ===== */
+.action-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-action {
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+/* EDIT → model Copy */
+.btn-edit.btn-action {
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+}
+
+.btn-edit.btn-action:hover {
+  background: #f8fafc;
+}
+
+/* DELETE → model Delete */
+.btn-delete.btn-action {
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+}
+
+.btn-delete.btn-action:hover {
+  background: #fecaca;
+}
+
+
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h2>Admin</h2>
+
+    <button class="nav active" data-page="users">Users</button>
+    <button class="nav" data-page="apikey">API Keys</button>
+    <button class="nav" data-page="history">API History</button>
+    
+
+    <hr>
+
+    <a class="nav link" href="/admin-docs.html">Docs</a>
+    <button class="logout" onclick="logout()">Logout</button>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- USERS -->
+    <section id="users" class="page active">
+      <h1>Daftar User</h1>
+
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nama Lengkap</th>
+            <th>Instansi</th>
+            <th>Email</th>
+            <th>Jumlah API Key</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="userTable"></tbody>
+      </table>
+    </section>
+
+   <!-- API KEYS -->
+<section id="apikey" class="page">
+  <h1>Manajemen API Key</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>API Key</th>
+        <th>Status</th>
+        <th>Usage</th>
+        <th>Last Used</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="apiKeyTable"></tbody>
+  </table>
+</section>
+
+
+    <!-- HISTORY -->
+    <section id="history" class="page">
+      <h1>History API</h1>
+      <table>
+        <thead>
+        <tr>
+            <th>User</th>
+            <th>Endpoint</th>
+            <th>Waktu</th>
+            <th>Aksi</th>
+        </tr>
+      </thead>
+        <tbody id="historyTable"></tbody>
+      </table>
+    </section>
+
+
+
+
+  </main>
+</div>
+
+<!-- ✅ SATU JS SAJA -->
+<script src="/js/admin.js"></script>
+
+</body>
+</html>

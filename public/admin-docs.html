@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>API Docs | IndoPost</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{box-sizing:border-box;font-family:system-ui}
+body{margin:0;background:#f4f6fb}
+.layout{display:flex;height:100vh}
+
+.sidebar{
+  width:240px;
+  background:#0f172a;
+  color:#fff;
+  padding:20px;
+}
+
+.sidebar h2{
+  margin-bottom:20px;
+}
+
+.nav{
+  width:100%;
+  background:none;
+  border:none;
+  color:#cbd5e1;
+  padding:12px;
+  text-align:left;
+  cursor:pointer;
+  border-radius:6px;
+  margin-bottom:6px;
+  font-size:15px;
+}
+
+.nav.active,
+.nav:hover{
+  background:#1e293b;
+  color:#fff;
+}
+
+.logout{
+  margin-top:12px;
+  background:#ef4444;
+  color:#fff;
+  border:none;
+  padding:12px;
+  border-radius:8px;
+  cursor:pointer;
+  width:100%;
+}
+
+.logout:hover{
+  background:#dc2626;
+}
+
+hr{
+  border:none;
+  border-top:1px solid #1e293b;
+  margin:16px 0;
+}
+
+
+
+
+
+/* ===== CONTENT ===== */
+.content{
+  flex:1;
+  padding:30px;
+  overflow:auto;
+}
+
+/* ===== DOCS STYLE (ASLI, TIDAK DIUBAH) ===== */
+.card{
+  background:#fff;
+  border-radius:12px;
+  padding:22px;
+  box-shadow:0 10px 20px rgba(0,0,0,.05);
+  margin-bottom:20px;
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(360px,1fr));
+  gap:20px;
+}
+.badge{
+  display:inline-block;
+  padding:4px 10px;
+  border-radius:999px;
+  font-size:12px;
+  margin-left:6px;
+}
+.get{background:#22c55e;color:#fff}
+.auth{background:#ef4444;color:#fff}
+pre{
+  background:#0f172a;
+  color:#e5e7eb;
+  padding:14px;
+  border-radius:8px;
+  overflow:auto;
+  font-size:13px;
+  margin-top:10px;
+}
+table{width:100%;border-collapse:collapse;margin-top:10px}
+th,td{border:1px solid #e5e7eb;padding:10px}
+th{background:#f1f5f9}
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+
+<aside class="sidebar">
+  <h2>Admin</h2>
+
+  <button class="nav" onclick="goDashboard('users')">Users</button>
+  <button class="nav" onclick="goDashboard('apikey')">API Keys</button>
+  <button class="nav" onclick="goDashboard('history')">API History</button>
+
+  <hr>
+
+  <button class="nav active">Docs</button>
+
+  <button class="logout" onclick="logout()">Logout</button>
+</aside>
+
+
+  <main class="content">
+
+  <h1>IndoPost Admin Documentation</h1>
+  <p>Dokumentasi internal untuk administrator sistem IndoPost API</p>
+
+  <!-- OVERVIEW -->
+  <div class="card">
+    <h3>📌 Overview</h3>
+    <p>
+      Halaman ini berisi dokumentasi khusus <b>Administrator</b> yang
+      memiliki akses penuh terhadap pengelolaan pengguna, API Key,
+      serta monitoring penggunaan API.
+    </p>
+    <p>
+      Dokumentasi ini <b>tidak ditujukan untuk pengguna umum</b>.
+    </p>
+  </div>
+
+  <!-- ROLE -->
+  <div class="card">
+    <h3>🛡️ Peran Administrator</h3>
+    <ul>
+      <li>Mengelola data pengguna (User)</li>
+      <li>Mengelola API Key milik pengguna</li>
+      <li>Mengawasi penggunaan API</li>
+      <li>Menonaktifkan user atau API Key bermasalah</li>
+      <li>Monitoring aktivitas sistem</li>
+    </ul>
+  </div>
+
+  <!-- AUTH -->
+  <div class="grid">
+    <div class="card">
+      <h3>🔐 Authentication</h3>
+      <p>
+        Admin melakukan login menggunakan <b>Email & Password</b>.
+      </p>
+      <p>
+        Setelah login berhasil, sistem akan memberikan <b>JWT Token</b>
+        yang disimpan di client untuk mengakses dashboard admin.
+      </p>
+      <pre>Authorization: Bearer JWT_TOKEN</pre>
+    </div>
+
+    <div class="card">
+      <h3>⚠️ Authorization</h3>
+      <p>
+        Hanya user dengan role <b>admin</b> yang dapat mengakses:
+      </p>
+      <ul>
+        <li>Admin Dashboard</li>
+        <li>User Management</li>
+        <li>API Key Management</li>
+        <li>API History</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- USERS -->
+  <div class="card">
+    <h3>👥 Manajemen User</h3>
+    <p>
+      Admin dapat melihat seluruh pengguna yang terdaftar di sistem.
+    </p>
+    <ul>
+      <li>Melihat data user (nama, email, instansi)</li>
+      <li>Melihat jumlah API Key tiap user</li>
+      <li>Menonaktifkan user (<code>is_active = false</code>)</li>
+      <li>Menghapus user (cascade ke API Key)</li>
+    </ul>
+
+    <p><b>Catatan:</b></p>
+    <ul>
+      <li>User non-aktif tidak dapat login</li>
+      <li>API Key milik user non-aktif otomatis tidak valid</li>
+    </ul>
+  </div>
+
+  <!-- API KEYS -->
+  <div class="card">
+    <h3>🔑 Manajemen API Key</h3>
+    <p>
+      Admin dapat memantau seluruh API Key yang terdaftar di sistem.
+    </p>
+    <ul>
+      <li>Melihat API Key berdasarkan user</li>
+      <li>Melihat status API Key (aktif / non-aktif)</li>
+      <li>Melihat jumlah penggunaan (<code>usage_count</code>)</li>
+      <li>Menonaktifkan API Key tertentu</li>
+    </ul>
+
+    <p><b>Status API Key:</b></p>
+    <table>
+      <tr>
+        <th>Status</th>
+        <th>Deskripsi</th>
+      </tr>
+      <tr>
+        <td>Active</td>
+        <td>API Key dapat digunakan untuk mengakses API</td>
+      </tr>
+      <tr>
+        <td>Inactive</td>
+        <td>API Key ditolak oleh sistem</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="card">
+    <h3>📊 API History & Monitoring</h3>
+    <p>
+      Semua request ke endpoint <code>/api/*</code> dicatat secara otomatis.
+    </p>
+
+    <p><b>Data yang dicatat:</b></p>
+    <ul>
+      <li>API Key</li>
+      <li>User pemilik API Key</li>
+      <li>Endpoint</li>
+      <li>HTTP Method</li>
+      <li>Status Code</li>
+      <li>User Agent</li>
+      <li>Waktu request</li>
+    </ul>
+
+    <p>
+      Data ini digunakan untuk <b>audit</b>, <b>monitoring</b>,
+      dan <b>analisis penyalahgunaan API</b>.
+    </p>
+  </div>
+
+  <!-- LIMITATION -->
+  <div class="card">
+    <h3>⚠️ Batasan Sistem</h3>
+    <ul>
+      <li>Tidak ada rate limit (belum diimplementasikan)</li>
+      <li>Tidak ada pagination pada endpoint wilayah</li>
+      <li>Tidak ada search endpoint</li>
+      <li>Data wilayah dikembalikan secara penuh</li>
+    </ul>
+  </div>
+
+  <!-- SECURITY -->
+  <div class="card">
+    <h3>🔒 Catatan Keamanan</h3>
+    <ul>
+      <li>API Key disimpan dalam database</li>
+      <li>Setiap request API Key diverifikasi</li>
+      <li>API Key non-aktif selalu ditolak</li>
+      <li>Aktivitas API tercatat untuk audit</li>
+    </ul>
+  </div>
+
+</main>
+
+</div>
+
+<script>
+function goDashboard(page){
+  window.location.href = `/admin-dashboard.html#${page}`;
+}
+
+function logout(){
+  localStorage.removeItem('token');
+  location.href = 'login.html';
+}
+</script>
+
+
+</body>
+</html>

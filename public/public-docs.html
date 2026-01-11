@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Dokumentasi API | IndoPost</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{box-sizing:border-box;font-family:system-ui,sans-serif}
+body{margin:0;background:#f5f7fb;color:#111}
+
+/* NAVBAR */
+header{
+  background:#1f2933;
+  color:#fff;
+  padding:14px 36px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+header a{
+  color:#fff;
+  text-decoration:none;
+  margin-left:14px;
+  font-size:14px;
+}
+.btn-outline{border:1px solid #fff;padding:6px 14px;border-radius:6px}
+.btn-yellow{background:#facc15;color:#000;padding:6px 14px;border-radius:6px;font-weight:600}
+
+/* CONTAINER */
+.container{
+  max-width:1100px;
+  margin:0 auto;
+  padding:50px 20px;
+}
+
+/* CARD */
+.card{
+  background:#fff;
+  border-radius:14px;
+  padding:28px;
+  box-shadow:0 12px 26px rgba(0,0,0,.06);
+  margin-bottom:28px;
+}
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:20px;
+}
+
+/* CODE */
+pre{
+  background:#0f172a;
+  color:#e5e7eb;
+  padding:14px;
+  border-radius:10px;
+  font-size:13px;
+  overflow:auto;
+  margin-top:10px;
+}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;margin-top:10px}
+th,td{border:1px solid #e5e7eb;padding:10px}
+th{background:#f1f5f9}
+
+.badge{
+  background:#22c55e;
+  color:#fff;
+  padding:4px 10px;
+  border-radius:999px;
+  font-size:12px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<header>
+  <strong>IndoPost API</strong>
+  <div>
+    <a href="/" class="btn-outline">Home</a>
+    <a href="/login.html" class="btn-outline">Login</a>
+    <a href="/register.html" class="btn-yellow">Register</a>
+  </div>
+</header>
+
+<div class="container">
+
+<!-- INTRO -->
+<div class="card">
+  <h1>📘 Dokumentasi IndoPost API</h1>
+  <p>
+    IndoPost API adalah REST API yang menyediakan data wilayah administratif
+    Indonesia secara <b>hierarkis</b>, mulai dari provinsi hingga kelurahan
+    beserta kode pos.
+  </p>
+  <p>
+    Dokumentasi ini ditujukan untuk <b>pengguna umum</b> yang ingin memahami
+    cara kerja API sebelum melakukan registrasi.
+  </p>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="card">
+  <h3>🔧 Cara Kerja API</h3>
+  <ol>
+    <li>User melakukan registrasi</li>
+    <li>User login dan mendapatkan API Key</li>
+    <li>API Key digunakan untuk mengakses endpoint</li>
+    <li>Data diambil secara bertingkat (provinsi → desa)</li>
+  </ol>
+</div>
+
+<!-- BASE + AUTH -->
+<div class="grid">
+  <div class="card">
+    <h3>🌐 Base URL</h3>
+    <pre>http://localhost:5000/api</pre>
+  </div>
+
+  <div class="card">
+    <h3>🔐 Authentication</h3>
+    <p>
+      Semua endpoint API membutuhkan <b>API Key</b>
+      yang dikirim melalui header:
+    </p>
+    <pre>Authorization: Bearer YOUR_API_KEY</pre>
+  </div>
+</div>
+
+<!-- FLOW -->
+<div class="card">
+  <h3>🌍 Hirarki Data Wilayah</h3>
+  <pre>Provinces → Regencies → Districts → Villages</pre>
+  <p>
+    Data wilayah harus diambil secara berurutan menggunakan
+    kode dari response sebelumnya.
+  </p>
+</div>
+
+<!-- PROVINCES -->
+<div class="card">
+  <h3>GET /api/provinces <span class="badge">GET</span></h3>
+  <p>Mengambil seluruh daftar provinsi di Indonesia.</p>
+
+  <pre>http://localhost:5000/api/provinces</pre>
+
+  <pre>{
+  "data": [
+    {
+      "code": "34",
+      "name": "DAERAH ISTIMEWA YOGYAKARTA"
+    }
+  ]
+}</pre>
+</div>
+
+<!-- REGENCIES -->
+<div class="card">
+  <h3>GET /api/regencies <span class="badge">GET</span></h3>
+
+  <table>
+    <tr><th>Query</th><th>Wajib</th><th>Contoh</th></tr>
+    <tr><td>province_code</td><td>Ya</td><td>34</td></tr>
+  </table>
+
+  <pre>http://localhost:5000/api/regencies?province_code=34</pre>
+</div>
+
+<!-- DISTRICTS -->
+<div class="card">
+  <h3>GET /api/districts <span class="badge">GET</span></h3>
+
+  <table>
+    <tr><th>Query</th><th>Wajib</th><th>Contoh</th></tr>
+    <tr><td>regency_code</td><td>Ya</td><td>3471</td></tr>
+  </table>
+
+  <pre>http://localhost:5000/api/districts?regency_code=3471</pre>
+</div>
+
+<!-- VILLAGES -->
+<div class="card">
+  <h3>GET /api/villages <span class="badge">GET</span></h3>
+
+  <table>
+    <tr><th>Query</th><th>Wajib</th><th>Contoh</th></tr>
+    <tr><td>district_code</td><td>Ya</td><td>347104</td></tr>
+  </table>
+
+  <pre>http://localhost:5000/api/villages?district_code=347104</pre>
+</div>
+
+<!-- LIMITATION -->
+<div class="card">
+  <h3>⚠️ Batasan API</h3>
+  <ul>
+    <li>Tidak tersedia pagination</li>
+    <li>Tidak tersedia pencarian berdasarkan nama</li>
+    <li>Data dikembalikan secara penuh</li>
+    <li>API bersifat public dengan API Key</li>
+  </ul>
+</div>
+
+<!-- CTA -->
+<div class="card">
+  <h3>🚀 Mulai Menggunakan API</h3>
+  <p>
+    Untuk mendapatkan API Key dan mulai menggunakan API,
+    silakan melakukan registrasi akun.
+  </p>
+  <a href="/register.html" class="btn-yellow">Daftar Sekarang</a>
+</div>
+
+</div>
+
+</body>
+</html>

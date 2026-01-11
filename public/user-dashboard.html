@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>User Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{box-sizing:border-box;font-family:system-ui,sans-serif}
+body{margin:0;background:#f5f7fb;display:flex;height:100vh}
+
+/* SIDEBAR */
+.sidebar{
+  width:240px;
+  background:#111827;
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+}
+.sidebar h2{
+  padding:20px;
+  margin:0;
+  border-bottom:1px solid #1f2937;
+}
+.sidebar a{
+  padding:14px 20px;
+  color:#cbd5e1;
+  text-decoration:none;
+  display:block;
+}
+.sidebar a:hover,
+.sidebar a.active{
+  background:#1f2937;
+  color:#fff;
+}
+.sidebar .bottom{
+  margin-top:auto;
+  padding:20px;
+}
+.logout{
+  width:100%;
+  padding:10px;
+  background:#ef4444;
+  color:#fff;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+/* MAIN */
+.main{
+  flex:1;
+  padding:30px;
+  overflow:auto;
+}
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+.card{
+  background:#fff;
+  border-radius:10px;
+  padding:20px;
+  box-shadow:0 10px 20px rgba(0,0,0,.05);
+  margin-bottom:20px;
+}
+.btn{
+  padding:10px 16px;
+  background:#2563eb;
+  color:#fff;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <h2>IndoPost</h2>
+  <a href="#" class="active">Dashboard</a>
+  <a href="api-key.html">API Keys</a>
+  <a href="playground.html">Playground</a>
+  <a href="docs.html">Docs</a>
+
+  <div class="bottom">
+    <button id="btnLogout" class="logout">Logout</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="header">
+    <h1>User Dashboard</h1>
+    <button id="btnGenerateKey" class="btn">
+      Generate API Key
+    </button>
+  </div>
+
+  <div class="card">
+    <h3>Active API Keys</h3>
+    <div id="activeKeysContent">
+      <p>Loading...</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>API Playground</h3>
+    <p>Test endpoint dan lihat response langsung.</p>
+  </div>
+</div>
+
+<script>
+/* ===== AUTH ===== */
+const token = localStorage.getItem('token');
+if (!token) location.href = 'login.html';
+
+/* ===== ELEMENTS ===== */
+const btnGenerateKey = document.getElementById('btnGenerateKey');
+const btnLogout = document.getElementById('btnLogout');
+const activeKeysContent = document.getElementById('activeKeysContent');
+
+/* ===== EVENTS ===== */
+btnGenerateKey.onclick = () => {
+  location.href = 'api-key.html';
+};
+
+btnLogout.onclick = () => {
+  localStorage.removeItem('token');
+  location.href = 'login.html';
+};
+
+/* ===== LOAD API KEYS ===== */
+const API = 'http://localhost:5000/dashboard/api-keys';
+
+async function loadDashboardKeys() {
+  try {
+    const res = await fetch(API, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    const data = await res.json();
+
+    if (!Array.isArray(data) || data.length === 0) {
+      activeKeysContent.innerHTML =
+        `<p>Belum ada API key. Klik tombol di atas untuk membuat.</p>`;
+      return;
+    }
+
+    activeKeysContent.innerHTML = `
+      <p><b>${data.length}</b> API key terdaftar</p>
+      <ul>
+        ${data.map(k => `
+          <li>
+            <code>${k.key.slice(0,12)}...</code>
+            (${k.is_active ? 'Active' : 'Revoked'})
+          </li>
+        `).join('')}
+      </ul>
+    `;
+  } catch (err) {
+    activeKeysContent.innerHTML =
+      `<p>Gagal memuat API key</p>`;
+  }
+}
+
+loadDashboardKeys();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>IndoPost API</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #f5f7fb;
+      color: #111;
+    }
+
+    /* NAVBAR */
+    header {
+      background: #1f2933;
+      color: #fff;
+      padding: 14px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header .logo {
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    header .nav a {
+      margin-left: 12px;
+      text-decoration: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .btn-login {
+      color: #fff;
+      border: 1px solid #fff;
+    }
+
+    .btn-register {
+      background: #facc15;
+      color: #000;
+      font-weight: 600;
+    }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, #2563eb, #6d28d9);
+      color: #fff;
+      padding: 90px 20px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 42px;
+      margin-bottom: 16px;
+    }
+
+    .hero p {
+      max-width: 720px;
+      margin: 0 auto 32px;
+      font-size: 16px;
+      opacity: 0.9;
+    }
+
+    .hero .actions a {
+      display: inline-block;
+      margin: 0 8px;
+      padding: 12px 22px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .btn-primary {
+      background: #fff;
+      color: #111;
+    }
+
+    .btn-outline {
+      border: 1px solid #fff;
+      color: #fff;
+    }
+
+    /* FEATURES */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 40px;
+      padding: 70px 60px;
+      background: #fff;
+      text-align: center;
+    }
+
+    .feature h3 {
+      margin-bottom: 8px;
+      font-size: 18px;
+    }
+
+    .feature p {
+      font-size: 14px;
+      color: #555;
+    }
+
+    /* FOOTER */
+    footer {
+      background: #1f2933;
+      color: #aaa;
+      text-align: center;
+      padding: 18px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        padding: 14px 20px;
+      }
+
+      .hero h1 {
+        font-size: 30px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <header>
+    <div class="logo">IndoPost API</div>
+    <div class="nav">
+      <a href="/login.html" class="btn-login">Login</a>
+      <a href="/register.html" class="btn-register">Register</a>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <h1>API Wilayah & Kode Pos Indonesia</h1>
+    <p>
+      Akses data provinsi, kabupaten/kota, kecamatan, desa, hingga kode pos
+      melalui REST API yang cepat dan aman.
+    </p>
+
+    <div class="actions">
+      <a href="/register.html" class="btn-primary">Mulai Sekarang</a>
+      <a href="/docs" class="btn-outline">Dokumentasi</a>
+
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features">
+    <div class="feature">
+      <h3>📍 Data Lengkap</h3>
+      <p>Provinsi, kota, kecamatan, desa & kode pos Indonesia.</p>
+    </div>
+
+    <div class="feature">
+      <h3>🔐 Aman</h3>
+      <p>API Key, rate limit, dan logging terintegrasi.</p>
+    </div>
+
+    <div class="feature">
+      <h3>⚡ Cepat</h3>
+      <p>Query teroptimasi menggunakan PostgreSQL.</p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    IndoPost API © 2026
+  </footer>
+
+</body>
+</html>
